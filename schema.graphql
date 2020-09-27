@@ -1,6 +1,21 @@
-type Gravatar @entity {
+enum DepositState {
+  Created
+  AddressGenerated
+  Funded
+  Minted
+  Failed
+}
+
+type Deposit @entity {
   id: ID!
+  state: DepositState!
   owner: Bytes!
-  displayName: String!
-  imageUrl: String!
+  lotSize: BigInt!
+  depositContract: Bytes
+  publicKeyX: Bytes
+  publicKeyY: Bytes
+  fundingTx: Bytes
+  creationTimestamp: BigInt
+  pubKeyTimestamp: BigInt
+  fundingTimestamp: BigInt
 }

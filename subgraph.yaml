@@ -1,27 +1,29 @@
 specVersion: 0.0.2
-description: Gravatar for Ethereum
-repository: https://github.com/graphprotocol/example-subgraph
+description: TBTC deposit and redemption explorer
+repository: https://github.com/zyra-zia/tbtc-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Gravity
+    name: TBTCSystem
     network: mainnet
     source:
-      address: '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'
-      abi: Gravity
+      address: '0xe20a5c79b39bc8c363f0f49adcfa82c2a01ab64a'
+      abi: TBTCSystem
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - Deposit
       abis:
-        - name: Gravity
-          file: ./abis/Gravity.json
+        - name: TBTCSystem
+          file: ./abis/TBTCSystem.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
+        - event: Created(indexed address,indexed address,uint256)
+          handler: handleCreated
+        - event: RegisteredPubkey(indexed address,bytes32,bytes32,uint256)
+          handler: handleRegisteredPubkey
+        - event: Funded(indexed address,indexed bytes32,uint256)
+          handler: handleFunded
       file: ./src/mapping.ts

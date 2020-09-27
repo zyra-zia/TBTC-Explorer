@@ -2,13 +2,12 @@
   "name": "TBTC",
   "version": "0.1.0",
   "scripts": {
-    "build-contract": "solc contracts/Gravity.sol --abi -o abis --overwrite && solc contracts/Gravity.sol --bin -o bin --overwrite",
-    "create": "graph create zyra-zia/TBTC --node https://api.thegraph.com/deploy/",
-    "create-local": "graph create zyra-zia/TBTC --node http://127.0.0.1:8020",
+    "create": "graph create zyra-zia/tbtc-explorer --node https://api.thegraph.com/deploy/",
+    "create-local": "graph create zyra-zia/tbtc-explorer --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy zyra-zia/TBTC --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy-local": "graph deploy zyra-zia/TBTC --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
+    "deploy": "graph deploy zyra-zia/tbtc-explorer --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-local": "graph deploy zyra-zia/tbtc-explorer --ipfs http://localhost:5001 --node http://127.0.0.1:8020"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.18.0",

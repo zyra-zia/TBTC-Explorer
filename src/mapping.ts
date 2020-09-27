@@ -1,22 +1,38 @@
-import { NewGravatar, UpdatedGravatar } from '../generated/Gravity/Gravity'
-import { Gravatar } from '../generated/schema'
+import { Created, RegisteredPubkey, Funded } from '../generated/TBTCSystem/TBTCSystem'
+import { Deposit } from '../generated/schema'
+import { BigInt } from '@graphprotocol/graph-ts'
 
-export function handleNewGravatar(event: NewGravatar): void {
-  let gravatar = new Gravatar(event.params.id.toHex())
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
+export function handleCreated(event: Created): void {
+  let deposit = new Deposit(event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex())
+  deposit.state = "Created"
+  deposit.owner = event.transaction.from
+  deposit.lotSize = BigInt.fromUnsignedBytes(event.transaction.input)
+  deposit.depositContract = event.params._depositContractAddress
+  deposit.creationTimestamp = event.params._timestamp
+  deposit.save()
 }
 
-export function handleUpdatedGravatar(event: UpdatedGravatar): void {
-  let id = event.params.id.toHex()
-  let gravatar = Gravatar.load(id)
-  if (gravatar == null) {
-    gravatar = new Gravatar(id)
+export function handleRegisteredPubkey(event: RegisteredPubkey): void {
+  let id = event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex()
+  let deposit = Deposit.load(id)
+  if (deposit == null) {
+    deposit = new Deposit(id)
   }
-  gravatar.owner = event.params.owner
-  gravatar.displayName = event.params.displayName
-  gravatar.imageUrl = event.params.imageUrl
-  gravatar.save()
+  deposit.state = "AddressGenerated"
+  deposit.publicKeyX = event.params._signingGroupPubkeyX
+  deposit.publicKeyY = event.params._signingGroupPubkeyY
+  deposit.pubKeyTimestamp = event.params._timestamp
+  deposit.save()
+}
+
+export function handleFunded(event: Funded): void {
+  let id = event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex()
+  let deposit = Deposit.load(id)
+  if (deposit == null) {
+    deposit = new Deposit(id)
+  }
+  deposit.state = "Funded"
+  deposit.fundingTx = event.params._txid
+  deposit.fundingTimestamp = event.params._timestamp
+  deposit.save()
 }
