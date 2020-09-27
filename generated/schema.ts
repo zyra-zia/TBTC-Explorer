@@ -12,6 +12,234 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class CreationTx extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save CreationTx entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save CreationTx entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("CreationTx", id.toString(), this);
+  }
+
+  static load(id: string): CreationTx | null {
+    return store.get("CreationTx", id) as CreationTx | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get deposit(): string {
+    let value = this.get("deposit");
+    return value.toString();
+  }
+
+  set deposit(value: string) {
+    this.set("deposit", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt | null {
+    let value = this.get("timestamp");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timestamp(value: BigInt | null) {
+    if (value === null) {
+      this.unset("timestamp");
+    } else {
+      this.set("timestamp", Value.fromBigInt(value as BigInt));
+    }
+  }
+}
+
+export class PubKeyTx extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save PubKeyTx entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save PubKeyTx entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("PubKeyTx", id.toString(), this);
+  }
+
+  static load(id: string): PubKeyTx | null {
+    return store.get("PubKeyTx", id) as PubKeyTx | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get deposit(): string {
+    let value = this.get("deposit");
+    return value.toString();
+  }
+
+  set deposit(value: string) {
+    this.set("deposit", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt | null {
+    let value = this.get("timestamp");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timestamp(value: BigInt | null) {
+    if (value === null) {
+      this.unset("timestamp");
+    } else {
+      this.set("timestamp", Value.fromBigInt(value as BigInt));
+    }
+  }
+}
+
+export class FundingTx extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save FundingTx entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save FundingTx entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("FundingTx", id.toString(), this);
+  }
+
+  static load(id: string): FundingTx | null {
+    return store.get("FundingTx", id) as FundingTx | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get deposit(): string {
+    let value = this.get("deposit");
+    return value.toString();
+  }
+
+  set deposit(value: string) {
+    this.set("deposit", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt | null {
+    let value = this.get("timestamp");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timestamp(value: BigInt | null) {
+    if (value === null) {
+      this.unset("timestamp");
+    } else {
+      this.set("timestamp", Value.fromBigInt(value as BigInt));
+    }
+  }
+}
+
+export class MintingTx extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save MintingTx entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save MintingTx entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("MintingTx", id.toString(), this);
+  }
+
+  static load(id: string): MintingTx | null {
+    return store.get("MintingTx", id) as MintingTx | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get deposit(): string {
+    let value = this.get("deposit");
+    return value.toString();
+  }
+
+  set deposit(value: string) {
+    this.set("deposit", Value.fromString(value));
+  }
+
+  get timestamp(): BigInt | null {
+    let value = this.get("timestamp");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set timestamp(value: BigInt | null) {
+    if (value === null) {
+      this.unset("timestamp");
+    } else {
+      this.set("timestamp", Value.fromBigInt(value as BigInt));
+    }
+  }
+}
+
 export class Deposit extends Entity {
   constructor(id: string) {
     super();
@@ -120,71 +348,63 @@ export class Deposit extends Entity {
     }
   }
 
-  get fundingTx(): Bytes | null {
+  get creationTx(): string {
+    let value = this.get("creationTx");
+    return value.toString();
+  }
+
+  set creationTx(value: string) {
+    this.set("creationTx", Value.fromString(value));
+  }
+
+  get pubKeyTx(): string | null {
+    let value = this.get("pubKeyTx");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set pubKeyTx(value: string | null) {
+    if (value === null) {
+      this.unset("pubKeyTx");
+    } else {
+      this.set("pubKeyTx", Value.fromString(value as string));
+    }
+  }
+
+  get fundingTx(): string | null {
     let value = this.get("fundingTx");
     if (value === null) {
       return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set fundingTx(value: Bytes | null) {
+  set fundingTx(value: string | null) {
     if (value === null) {
       this.unset("fundingTx");
     } else {
-      this.set("fundingTx", Value.fromBytes(value as Bytes));
+      this.set("fundingTx", Value.fromString(value as string));
     }
   }
 
-  get creationTimestamp(): BigInt | null {
-    let value = this.get("creationTimestamp");
+  get mintingTx(): string | null {
+    let value = this.get("mintingTx");
     if (value === null) {
       return null;
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set creationTimestamp(value: BigInt | null) {
+  set mintingTx(value: string | null) {
     if (value === null) {
-      this.unset("creationTimestamp");
+      this.unset("mintingTx");
     } else {
-      this.set("creationTimestamp", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get pubKeyTimestamp(): BigInt | null {
-    let value = this.get("pubKeyTimestamp");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set pubKeyTimestamp(value: BigInt | null) {
-    if (value === null) {
-      this.unset("pubKeyTimestamp");
-    } else {
-      this.set("pubKeyTimestamp", Value.fromBigInt(value as BigInt));
-    }
-  }
-
-  get fundingTimestamp(): BigInt | null {
-    let value = this.get("fundingTimestamp");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set fundingTimestamp(value: BigInt | null) {
-    if (value === null) {
-      this.unset("fundingTimestamp");
-    } else {
-      this.set("fundingTimestamp", Value.fromBigInt(value as BigInt));
+      this.set("mintingTx", Value.fromString(value as string));
     }
   }
 }

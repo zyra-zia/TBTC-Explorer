@@ -10,12 +10,16 @@ dataSources:
     source:
       address: '0xe20a5c79b39bc8c363f0f49adcfa82c2a01ab64a'
       abi: TBTCSystem
+      startBlock: 10867764
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
         - Deposit
+        - CreationTx
+        - PubKeyTx
+        - FundingTx
       abis:
         - name: TBTCSystem
           file: ./abis/TBTCSystem.json
@@ -27,3 +31,25 @@ dataSources:
         - event: Funded(indexed address,indexed bytes32,uint256)
           handler: handleFunded
       file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: VendingMachine
+    network: mainnet
+    source:
+      address: '0x526c08E5532A9308b3fb33b7968eF78a5005d2AC'
+      abi: VendingMachine
+      startBlock: 10867767
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Deposit
+        - MintingTx
+      abis:
+        - name: VendingMachine
+          file: ./abis/VendingMachine.json
+      callHandlers:
+        - function: tdtToTbtc(uint256)
+          handler: handleTDTToTBTC
+      file: ./src/mapping.ts
+    

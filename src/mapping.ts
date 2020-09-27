@@ -1,19 +1,32 @@
 import { Created, RegisteredPubkey, Funded } from '../generated/TBTCSystem/TBTCSystem'
-import { Deposit } from '../generated/schema'
+import {TdtToTbtcCall} from '../generated/VendingMachine/VendingMachine'
+import { Deposit, CreationTx, PubKeyTx, FundingTx, MintingTx } from '../generated/schema'
 import { BigInt } from '@graphprotocol/graph-ts'
 
 export function handleCreated(event: Created): void {
-  let deposit = new Deposit(event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex())
+  let deposit = new Deposit(event.params._depositContractAddress.toHex())
   deposit.state = "Created"
   deposit.owner = event.transaction.from
-  deposit.lotSize = BigInt.fromUnsignedBytes(event.transaction.input)
+  
+  //remove method id = 0xb7947b40
+  let lotSizeHex = event.transaction.input.toHexString().substr(9);
+  let lotSize = parseInt(lotSizeHex, 16);
+  deposit.lotSize = BigInt.fromI32(<i32>lotSize)
+
   deposit.depositContract = event.params._depositContractAddress
-  deposit.creationTimestamp = event.params._timestamp
+
+  let creationTx = new CreationTx(event.transaction.hash.toHex());
+  creationTx.deposit = deposit.id
+  creationTx.timestamp = event.params._timestamp
+  creationTx.save()
+
+  deposit.creationTx = creationTx.id
   deposit.save()
 }
 
+
 export function handleRegisteredPubkey(event: RegisteredPubkey): void {
-  let id = event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex()
+  let id = event.params._depositContractAddress.toHex()
   let deposit = Deposit.load(id)
   if (deposit == null) {
     deposit = new Deposit(id)
@@ -21,18 +34,46 @@ export function handleRegisteredPubkey(event: RegisteredPubkey): void {
   deposit.state = "AddressGenerated"
   deposit.publicKeyX = event.params._signingGroupPubkeyX
   deposit.publicKeyY = event.params._signingGroupPubkeyY
-  deposit.pubKeyTimestamp = event.params._timestamp
+
+  let pubKeyTx = new PubKeyTx(event.transaction.hash.toHex());
+  pubKeyTx.deposit = deposit.id
+  pubKeyTx.timestamp = event.params._timestamp
+  pubKeyTx.save()
+
+  deposit.pubKeyTx = pubKeyTx.id
   deposit.save()
 }
 
 export function handleFunded(event: Funded): void {
-  let id = event.params._depositContractAddress.toString() + "-" + event.transaction.from.toHex()
+  let id = event.params._depositContractAddress.toHex()
   let deposit = Deposit.load(id)
   if (deposit == null) {
     deposit = new Deposit(id)
   }
   deposit.state = "Funded"
-  deposit.fundingTx = event.params._txid
-  deposit.fundingTimestamp = event.params._timestamp
-  deposit.save()
+
+  let fundingTx = new FundingTx(event.transaction.hash.toHex());
+  fundingTx.deposit = deposit.id
+  fundingTx.timestamp = event.params._timestamp
+  fundingTx.save()
+
+  deposit.fundingTx = fundingTx.id
+  deposit.save();
+}
+
+export function handleTDTToTBTC(call: TdtToTbtcCall): void {
+  let id = call.inputs._tdtId.toHex()
+  let deposit = Deposit.load(id)
+  if (deposit == null) {
+    return
+  }
+  deposit.state = "Minted"
+
+  let mintingTx = new MintingTx(call.transaction.hash.toHex());
+  mintingTx.deposit = deposit.id
+  mintingTx.timestamp = call.block.timestamp
+  mintingTx.save()
+
+  deposit.mintingTx = mintingTx.id
+  deposit.save();
 }

@@ -6,6 +6,30 @@ enum DepositState {
   Failed
 }
 
+type CreationTx @entity {
+  id: ID!
+  deposit: Deposit!
+  timestamp: BigInt
+}
+
+type PubKeyTx @entity {
+  id: ID!
+  deposit: Deposit!
+  timestamp: BigInt
+}
+
+type FundingTx @entity {
+  id: ID!
+  deposit: Deposit!
+  timestamp: BigInt
+}
+
+type MintingTx @entity {
+  id: ID!
+  deposit: Deposit!
+  timestamp: BigInt
+}
+
 type Deposit @entity {
   id: ID!
   state: DepositState!
@@ -14,8 +38,8 @@ type Deposit @entity {
   depositContract: Bytes
   publicKeyX: Bytes
   publicKeyY: Bytes
-  fundingTx: Bytes
-  creationTimestamp: BigInt
-  pubKeyTimestamp: BigInt
-  fundingTimestamp: BigInt
+  creationTx: CreationTx!
+  pubKeyTx: PubKeyTx
+  fundingTx: FundingTx
+  mintingTx: MintingTx
 }
