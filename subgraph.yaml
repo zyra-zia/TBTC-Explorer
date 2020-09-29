@@ -20,6 +20,10 @@ dataSources:
         - CreationTx
         - PubKeyTx
         - FundingTx
+        - Redemption
+        - RequestTx
+        - SignatureTx
+        - RedeemTx
       abis:
         - name: TBTCSystem
           file: ./abis/TBTCSystem.json
@@ -30,6 +34,12 @@ dataSources:
           handler: handleRegisteredPubkey
         - event: Funded(indexed address,indexed bytes32,uint256)
           handler: handleFunded
+        - event: RedemptionRequested(indexed address,indexed address,indexed bytes32,uint256,bytes,uint256,bytes)
+          handler: handleRequested
+        - event: GotRedemptionSignature(indexed address,indexed bytes32,bytes32,bytes32,uint256)
+          handler: handleSignature
+        - event: Redeemed(indexed address,indexed bytes32,uint256)
+          handler: handleRedeemed
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: VendingMachine

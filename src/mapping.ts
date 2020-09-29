@@ -1,6 +1,6 @@
-import { Created, RegisteredPubkey, Funded } from '../generated/TBTCSystem/TBTCSystem'
+import { Created, RegisteredPubkey, Funded, RedemptionRequested, GotRedemptionSignature, Redeemed, AllowNewDepositsUpdated } from '../generated/TBTCSystem/TBTCSystem'
 import {TdtToTbtcCall} from '../generated/VendingMachine/VendingMachine'
-import { Deposit, CreationTx, PubKeyTx, FundingTx, MintingTx } from '../generated/schema'
+import { Deposit, CreationTx, PubKeyTx, FundingTx, MintingTx, Redemption, RequestTx, SignatureTx, RedeemTx } from '../generated/schema'
 import { BigInt } from '@graphprotocol/graph-ts'
 
 export function handleCreated(event: Created): void {
@@ -76,4 +76,56 @@ export function handleTDTToTBTC(call: TdtToTbtcCall): void {
 
   deposit.mintingTx = mintingTx.id
   deposit.save();
+}
+
+export function handleRequested(event: RedemptionRequested): void {
+  let redemption = new Redemption(event.params._depositContractAddress.toHex())
+  redemption.state = "Requested"
+  redemption.owner = event.transaction.from
+  
+  let requestTx = new RequestTx(event.transaction.hash.toHex());
+  requestTx.redemption = redemption.id
+  requestTx.save()
+
+  redemption.requestTx = requestTx.id
+  redemption.save();
+
+  //link redemption to deposit
+  let deposit = Deposit.load(redemption.id)
+  deposit.redemption = redemption.id
+  deposit.save()
+}
+
+export function handleSignature(event: GotRedemptionSignature): void {
+  let id = event.params._depositContractAddress.toHex()
+  let redemption = Redemption.load(id)
+  if (redemption == null) {
+    redemption = new Redemption(id)
+  }
+  redemption.state = "Signature"
+
+  let signatureTx = new SignatureTx(event.transaction.hash.toHex());
+  signatureTx.timestamp = event.params._timestamp
+  signatureTx.redemption = redemption.id
+  signatureTx.save()
+
+  redemption.redeemTx = signatureTx.id
+  redemption.save();
+}
+
+export function handleRedeemed(event: Redeemed): void {
+  let id = event.params._depositContractAddress.toHex()
+  let redemption = Redemption.load(id)
+  if (redemption == null) {
+    redemption = new Redemption(id)
+  }
+  redemption.state = "Redeemed"
+
+  let redeemTx = new RedeemTx(event.transaction.hash.toHex());
+  redeemTx.timestamp = event.params._timestamp
+  redeemTx.redemption = redemption.id
+  redeemTx.save()
+
+  redemption.redeemTx = redeemTx.id
+  redemption.save();
 }

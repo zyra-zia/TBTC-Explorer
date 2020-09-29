@@ -42,4 +42,39 @@ type Deposit @entity {
   pubKeyTx: PubKeyTx
   fundingTx: FundingTx
   mintingTx: MintingTx
+  redemption: Redemption
+}
+
+enum RedemptionState {
+  Requested
+  Signature
+  Redeemed
+}
+
+type RequestTx @entity {
+  id: ID!
+  redemption: Redemption!
+  timestamp: BigInt
+}
+
+type SignatureTx @entity {
+  id: ID!
+  redemption: Redemption!
+  timestamp: BigInt
+}
+
+type RedeemTx @entity {
+  id: ID!
+  redemption: Redemption!
+  timestamp: BigInt
+}
+
+type Redemption @entity {
+  id: ID!
+  state: RedemptionState!
+  owner: Bytes!
+  requestTx: RequestTx!
+  signatureTx: SignatureTx
+  redeemTx: RedeemTx
+  deposit: Deposit
 }
