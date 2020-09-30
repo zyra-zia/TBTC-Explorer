@@ -94,6 +94,9 @@ export function handleRequested(event: RedemptionRequested): void {
   let deposit = Deposit.load(redemption.id)
   deposit.redemption = redemption.id
   deposit.save()
+  
+  redemption.deposit = deposit.id;
+  redemption.save();
 }
 
 export function handleSignature(event: GotRedemptionSignature): void {
@@ -106,10 +109,15 @@ export function handleSignature(event: GotRedemptionSignature): void {
 
   let signatureTx = new SignatureTx(event.transaction.hash.toHex());
   signatureTx.timestamp = event.params._timestamp
+  //also fill in request tx timestamp
+  let requestTx = RequestTx.load(redemption.requestTx);
+  requestTx.timestamp = event.params._timestamp
+  requestTx.save();
+  
   signatureTx.redemption = redemption.id
   signatureTx.save()
 
-  redemption.redeemTx = signatureTx.id
+  redemption.signatureTx = signatureTx.id
   redemption.save();
 }
 
